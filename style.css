@@ -1,0 +1,43 @@
+body {
+	background-color:#ccc;
+}
+
+header,
+main,
+footer {
+	background-color:#fff;
+	width:532px;
+	margin:0px auto;
+	padding:5px 50px;
+}
+
+#field td {
+	height:100px;
+	width:100px;
+	border:solid 1px;
+}
+
+#field td.hover {
+	background-color:#ff9;
+}
+
+#field td.standing {
+	background-color:#00c;
+}
+
+#field td.dead {
+	background-color:#555;
+}
+
+#points td {
+	padding:0px 15px 0px 0px;
+}
+
+#points th {
+	text-align:left;
+}
+
+#points th:nth-of-type(2),
+#points td:nth-of-type(2) {
+	border-right:solid 1px;
+}
