@@ -161,6 +161,7 @@ whichY = function(el) {
 		if(par.childNodes[i] === parel)
 			return i;
 };
+
 whichDiff = function(one, two) {
 	var onex = whichX(one);
 	var oney = whichY(one);
