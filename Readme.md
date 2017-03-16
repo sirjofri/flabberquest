@@ -3,9 +3,13 @@
 Dieses Spiel ist innerhalb von einer Stunde entstanden (Game Design).
 Die Implementierung hat dagegen viel länger gedauert (aber dennoch im Rahmen).
 
-Hier sind die ursprünglichen Regeln, die wir verfasst haben:
+## Features
 
-# theGame
+- Der beginnende Spieler wird per Zufall bestimmt
+- Strafpunkte werden rundenweise ausgezählt
+- Das Spiel ist überhaupt spielbar
+
+# theGame (ursprüngliche Regeln)
 ## Spielregeln
 
 ## Aufbau
