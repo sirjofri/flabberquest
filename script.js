@@ -124,8 +124,8 @@ loop = function(el) {
 				stage = "stopped";
 				break;
 			}
-			break;
 		}
+		break;
 	case "stopped":
 		msg.innerHTML = "Das Spiel ist gewonnen! Siehe unten für die Ergebnisse<br>Zum erneuten Spielen die Seite aktualisieren";
 		break;
