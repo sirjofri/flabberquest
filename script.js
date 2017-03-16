@@ -8,7 +8,6 @@ var turn; // Which player's turn (starting with 1)
 var recent; // recent active element (which has "standing" class enabled)
 var old; // old active element
 var roll; // recent roll
-var round;
 
 window.onload = function() {
 	for(var i=0; i<5; i++)
@@ -86,7 +85,6 @@ loop = function(el) {
 	case "start":
 		if(!el.classList.contains("dead"))
 		{
-			round = 0;
 			el.classList.add("standing");
 			recent = el;
 			toggleTurn();
@@ -102,7 +100,6 @@ loop = function(el) {
 				+points.getElementsByTagName("tr")[1].childNodes[1].innerHTML < 10 &&
 				+points.getElementsByTagName("tr")[2].childNodes[1].innerHTML < 10 )
 			{
-				round++;
 				recent.classList.remove("standing");
 				el.classList.add("standing");
 				old = recent;
@@ -182,7 +179,7 @@ addPoints = function(player, p) {
 	if(points.getElementsByTagName("tr")[player].childNodes.length > points.getElementsByTagName("tr")[0].childNodes.length)
 	{
 		var label = document.createElement("th");
-		label.innerHTML = round;
+		label.innerHTML = (points.getElementsByTagName("tr")[0].lastChild.innerHTML.length > 3 ? "1" : +points.getElementsByTagName("tr")[0].lastChild.innerHTML +1 );
 		points.getElementsByTagName("tr")[0].appendChild(label);
 	}
 	recalculate();
