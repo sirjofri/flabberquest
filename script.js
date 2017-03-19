@@ -201,7 +201,7 @@ getPathFields = function(one, two) {
 				result.push(pointer);
 				while(pointer !== field[y2][x2])
 				{
-					pointer = field[++curry][++currx];
+					pointer = field[++curry][++currx]; //TODO Bugfix!
 					result.push(pointer);
 				}
 			} else {
@@ -258,13 +258,25 @@ validDirection = function(one, two) {
 
 	var valid = !( (diffx == 0 || diffy == 0) || diffx == diffy );
 
-	console.log(valid?"Gültig":"ungültig");
+	console.log(valid?"richtig":"Richtung!");
 
 	return valid;
 };
 
 validNoWall = function(one, two) {
-	return true; // TODO: fill in later
+	var path = getPathFields(one, two);
+	var valid = true;
+
+	path.forEach((el)=>{
+		if(el.classList.contains("dead") && valid)
+		{
+			valid = false;
+		}
+	});
+
+	console.log(valid?"keine Wand":"Wand!");
+
+	return valid;
 };
 
 whichDiff = function(one, two) {
