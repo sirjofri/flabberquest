@@ -161,6 +161,81 @@ whichY = function(el) {
 			return i;
 };
 
+getPathFields = function(one, two) {
+	var result = [];
+	var x1 = whichX(one);
+	var y1 = whichY(one);
+	var x2 = whichX(two);
+	var y2 = whichY(two);
+
+	var diffx = Math.abs(x2 - x1);
+	var diffy = Math.abs(y2 - y1);
+
+	if(diffx == 0) //if vertical
+	{
+		for(var i= (y1>y2?y1:y2); i>= (y1>y2?y2:y1); i--)
+		{
+			result.push(field[i][x1]);
+		}
+	} else if(diffy == 0) //if horizontal
+	{
+		for(var i= (x1>x2?x1:x2); i>= (x1>x2?x2:x1); i--)
+		{
+			result.push(field[y1][i]);
+		}
+	} else { //if diagonal
+		if(x2 >= x1)
+		{
+			if(y2 >= y1)
+			{
+				var curry = y1;
+				var currx = x1;
+				var pointer = field[curry][currx];
+				result.push(pointer);
+				while(pointer !== field[y2][x2])
+				{
+					pointer = field[++curry][++currx];
+					result.push(pointer);
+				}
+			} else {
+				var curry = y1;
+				var currx = x1;
+				var pointer = field[curry][currx];
+				result.push(pointer);
+				while(pointer !== field[y2][x2])
+				{
+					pointer = field[--curry][++currx];
+					result.push(pointer);
+				}
+			}
+		} else {
+			if(y2 >= y1)
+			{
+				var curry = y1;
+				var currx = x1;
+				var pointer = field[curry][currx];
+				result.push(pointer);
+				while(pointer !== field[y2][x2])
+				{
+					pointer = field[++curry][--currx];
+					result.push(pointer);
+				}
+			} else {
+				var curry = y1;
+				var currx = x1;
+				var pointer = field[curry][currx];
+				result.push(pointer);
+				while(pointer !== field[y2][x2])
+				{
+					pointer = field[--curry][--currx];
+					result.push(pointer);
+				}
+			}
+		}
+	}
+	return result;
+};
+
 validTurn = function(one, two) {
 	return (validDirection(one, two) && validNoWall(one, two));
 };
