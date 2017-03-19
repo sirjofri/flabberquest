@@ -94,7 +94,7 @@ loop = function(el) {
 		}
 		break;
 	case "running":
-		if(!el.classList.contains("dead"))
+		if(!el.classList.contains("dead") && !validTurn(recent, el))
 		{
 			if(
 				+points.getElementsByTagName("tr")[1].childNodes[1].innerHTML < 10 &&
@@ -124,6 +124,8 @@ loop = function(el) {
 				stage = "stopped";
 				break;
 			}
+		} else {
+			msg.innerHTML = "Ungültiger Zug!<br>"+msg.innerHTML;
 		}
 		break;
 	case "stopped":
@@ -157,6 +159,30 @@ whichY = function(el) {
 	for(var i=0; i<par.childNodes.length; i++)
 		if(par.childNodes[i] === parel)
 			return i;
+};
+
+validTurn = function(one, two) {
+	return (validDirection(one, two) && validNoWall(one, two));
+};
+
+validDirection = function(one, two) {
+	var onex = whichX(one);
+	var oney = whichY(one);
+	var twox = whichX(two);
+	var twoy = whichY(two);
+
+	var diffx = Math.abs(twox - onex);
+	var diffy = Math.abs(twoy - oney);
+
+	var valid = !( (diffx == 0 || diffy == 0) || diffx == diffy );
+
+	console.log(valid?"Gültig":"ungültig");
+
+	return valid;
+};
+
+validNoWall = function(one, two) {
+	return true; // TODO: fill in later
 };
 
 whichDiff = function(one, two) {
