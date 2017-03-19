@@ -101,7 +101,7 @@ loop = function(el) {
 		}
 		break;
 	case "running":
-		if(!el.classList.contains("dead") && !validTurn(recent, el))
+		if(!el.classList.contains("dead") && validTurn(recent, el))
 		{
 			if(
 				+points.getElementsByTagName("tr")[1].childNodes[1].innerHTML < 10 &&
@@ -201,7 +201,7 @@ getPathFields = function(one, two) {
 				result.push(pointer);
 				while(pointer !== field[y2][x2])
 				{
-					pointer = field[++curry][++currx]; //TODO Bugfix!
+					pointer = field[++curry][++currx];
 					result.push(pointer);
 				}
 			} else {
@@ -256,7 +256,7 @@ validDirection = function(one, two) {
 	var diffx = Math.abs(twox - onex);
 	var diffy = Math.abs(twoy - oney);
 
-	var valid = !( (diffx == 0 || diffy == 0) || diffx == diffy );
+	var valid = ( (diffx == 0 || diffy == 0) || diffx == diffy );
 
 	console.log(valid?"richtig":"Richtung!");
 
