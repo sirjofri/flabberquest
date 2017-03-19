@@ -1,3 +1,10 @@
+/*
+ * THIS CODE IS WILD CODE!
+ *
+ * Although this code is wild code, it is tameable and maybe understandable.
+ * Don't expect to much. You've been warned!
+ *
+ */
 var stage = "loading";
 /* Stages: loading, dead0, dead1, dead2, start, running */
 
