@@ -23,7 +23,7 @@ window.onload = function() {
 		for(var j=0; j<field[i].length; j++)
 		{
 			field[i][j].onclick = fieldclick;
-			field[i][j].onmouseover = fieldhover;
+			field[i][j].onmouseenter = fieldhoveron;
 		}
 	}
 	console.log("Field initialized");
@@ -34,10 +34,34 @@ window.onload = function() {
 };
 
 fieldclick = function(ev) {
+	clearhover();
 	loop(ev.target);
 };
 
-fieldhover = function(ev) {
+fieldhoveron = function(ev) {
+	clearhover();
+
+	if(recent!==undefined && validTurn(recent, ev.target))
+	{
+		var path = getPathFields(recent, ev.target);
+		for(var i=0; i<path.length; i++)
+		{
+			if(path[i]!==recent)
+			{
+				path[i].classList.add("hover");
+			}
+		}
+	}
+};
+
+clearhover = function() {
+	for(var i=0; i<field.length; i++)
+	{
+		for(var j=0; j<field[i].length; j++)
+		{
+			field[i][j].classList.remove("hover");
+		}
+	}
 };
 
 loop = function(el) {
