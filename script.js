@@ -244,7 +244,21 @@ getPathFields = function(one, two) {
 };
 
 validTurn = function(one, two) {
-	return (validDirection(one, two) && validNoWall(one, two));
+	return (validDirection(one, two) && validLength(one, two) && validNoWall(one, two));
+};
+
+validLength = function(one, two) {
+	var onex = whichX(one);
+	var oney = whichY(one);
+	var twox = whichX(two);
+	var twoy = whichY(two);
+
+	var diffx = Math.abs(twox - onex);
+	var diffy = Math.abs(twoy - oney);
+
+	var total = diffx > diffy ? diffx : diffy;
+
+	return (total <= roll);
 };
 
 validDirection = function(one, two) {
