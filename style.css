@@ -22,11 +22,13 @@ footer {
 }
 
 #field td.standing {
-	background-color:#00c;
+	background: url("pics/flabbergast.gif");
+    background-size: cover;
 }
 
 #field td.dead {
-	background-color:#555;
+	background: url("pics/wall.png");
+    background-size: cover;
 }
 
 #points td {
