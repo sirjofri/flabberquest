@@ -294,13 +294,13 @@ game.loop = function(el) {
 				game.turn = 2;
 			}
 		}
-		game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle ein totes Feld aus";
+		game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll";
 		game.stage = "dead0";
 		break;
 	case "dead0":
 		el.classList.add("dead");
 		game.toggleTurn();
-		game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle ein totes Feld aus";
+		game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll";
 		game.stage = "dead1";
 		break;
 	case "dead1":
@@ -308,7 +308,7 @@ game.loop = function(el) {
 		{
 			el.classList.add("dead");
 			game.toggleTurn();
-			game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle ein totes Feld aus";
+			game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll";
 			game.stage = "dead2";
 		}
 		break;
