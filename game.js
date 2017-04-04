@@ -1,6 +1,7 @@
 var game = {}; //initialize empty game object
 
 game.field = []; // game field
+game.table;
 game.msg;
 game.recent; //= (function() { return document.getElementsByClassName("standing")[0]; })();
 game.fx =  {};
@@ -23,18 +24,16 @@ very important: No spaces/newlines/tabs inside this section! Technically: No tex
 the argument scoreboard is an html element. please look into index.html for reference.
 */
 
-game.initialize = function(table, msg, scoreboard) {
-	var rows = table.getElementsByTagName("tr");
-
-	for(var i=0; i<rows.length; i++)
+game.initialize = function(msg, scoreboard) {
+	for(var i=0; i<5; i++)
 	{
-		game.field[i] = rows[i].getElementsByTagName("td");
-		for(var j=0; j<game.field[i].length; j++)
+		game.field[i] = [];
+		for(var j=0; j<5; j++)
 		{
-			game.field[i][j].onclick = game.fieldclick;
-			game.field[i][j].onmouseenter = game.fx.fieldhoveron;
+			game.field[i][j] = {type:"nothing"}; //introducing game types: nothing, standing, dead
 		}
 	}
+
 	console.log("game: Field initialized");
 
 	game.msg = msg;
@@ -42,35 +41,8 @@ game.initialize = function(table, msg, scoreboard) {
 	game.scoreboard = scoreboard;
 };
 
-game.fieldclick = function(ev) {
-	game.fx.clearhover();
-	game.loop(ev.target);
-};
-
-game.fx.fieldhoveron = function(ev) {
-	game.fx.clearhover();
-
-	if(game.recent !== undefined && game.board.validTurn(game.recent, ev.target))
-	{
-		var path = game.board.getPathFields(game.recent, ev.target);
-		for(var i=0; i<path.length; i++)
-		{
-			if(path[i] !== game.recent)
-			{
-				path[i].classList.add("hover");
-			}
-		}
-	}
-};
-
-game.fx.clearhover = function() {
-	for(var i=0; i<game.field.length; i++)
-	{
-		for(var j=0; j<game.field[i].length; j++)
-		{
-			game.field[i][j].classList.remove("hover");
-		}
-	}
+game.register = function(t) {
+	game.table = t;
 };
 
 game.dice = function() {
@@ -115,47 +87,19 @@ game.toggleTurn = function() {
 	game.turn = (game.turn == 1 ? 2 : 1);
 };
 
-game.board.whichX = function(el) {
-	var par = el.parentNode;
-	for(var i=0; i<par.childNodes.length; i++)
-	{
-		if(par.childNodes[i] === el)
-		{
-			return i;
-		}
-	}
-};
-
-game.board.whichY = function(el) {
-	var parel = el.parentNode;
-	var par = parel.parentNode;
-	for(var i=0; i<par.childNodes.length; i++)
-	{
-		if(par.childNodes[i] === parel)
-		{
-			return i;
-		}
-	}
-};
-
 game.board.whichDiff = function(one, two) {
-	var onex = game.board.whichX(one);
-	var oney = game.board.whichY(one);
-	var twox = game.board.whichX(two);
-	var twoy = game.board.whichY(two);
-
-	var diffx = Math.abs(twox - onex);
-	var diffy = Math.abs(twoy - oney);
+	var diffx = Math.abs(two.x - one.x);
+	var diffy = Math.abs(two.y - one.y);
 
 	return (diffx > diffy ? diffx : diffy);
 };
 
-game.board.validNoWall = function(one, two) {
+game.board.validNoWall = function(one, two) { //TODO: rewrite
 	var path = game.board.getPathFields(one, two);
 	var valid = true;
 
 	path.forEach((el)=>{
-		if(el.classList.contains("dead") && valid)
+		if(game.getField(el.x,el.y) == "dead" && valid)
 		{
 			valid = false;
 		}
@@ -165,13 +109,8 @@ game.board.validNoWall = function(one, two) {
 };
 
 game.board.validDirection = function(one, two) {
-	var onex = game.board.whichX(one);
-	var oney = game.board.whichY(one);
-	var twox = game.board.whichX(two);
-	var twoy = game.board.whichY(two);
-
-	var diffx = Math.abs(twox - onex);
-	var diffy = Math.abs(twoy - oney);
+	var diffx = Math.abs(two.x - one.x);
+	var diffy = Math.abs(two.y - one.y);
 
 	var valid = ( ( diffx == 0 || diffy == 0) || diffx == diffy );
 
@@ -179,13 +118,8 @@ game.board.validDirection = function(one, two) {
 };
 
 game.board.validLength = function(one, two) {
-	var onex = game.board.whichX(one);
-	var oney = game.board.whichY(one);
-	var twox = game.board.whichX(two);
-	var twoy = game.board.whichY(two);
-
-	var diffx = Math.abs(twox - onex);
-	var diffy = Math.abs(twoy - oney);
+	var diffx = Math.abs(two.x - one.x);
+	var diffy = Math.abs(two.y - one.y);
 
 	var total = diffx > diffy ? diffx : diffy;
 
@@ -196,12 +130,21 @@ game.board.validTurn = function(one, two) {
 	return (game.board.validDirection(one, two) && game.board.validLength(one, two) && game.board.validNoWall(one, two));
 };
 
+game.setField = function(x,y,type) {
+	game.field[x][y] = {type:type};
+	game.table.setField(x,y,type,game.recent);
+}
+
+game.getField = function(x,y) {
+	return game.field[x][y].type;
+}
+
 game.board.getPathFields = function(one, two) {
 	var result = [];
-	var x1 = game.board.whichX(one);
-	var y1 = game.board.whichY(one);
-	var x2 = game.board.whichX(two);
-	var y2 = game.board.whichY(two);
+	var x1 = one.x;
+	var y1 = one.y;
+	var x2 = two.x;
+	var y2 = two.y;
 
 	var diffx = Math.abs(x2 - x1);
 	var diffy = Math.abs(y2 - y1);
@@ -210,13 +153,13 @@ game.board.getPathFields = function(one, two) {
 	{
 		for(var i= (y1>y2?y1:y2); i>= (y1>y2?y2:y1); i--)
 		{
-			result.push(game.field[i][x1]);
+			result.push({x:x1,y:i});
 		}
 	} else if(diffy == 0) // if horizontal
 	{
 		for(var i= (x1>x2?x1:x2); i>= (x1>x2?x2:x1); i--)
 		{
-			result.push(game.field[y1][i]);
+			result.push({x:i,y:y1});
 		}
 	} else { // if diagonal
 		if(x2 >= x1)
@@ -225,22 +168,18 @@ game.board.getPathFields = function(one, two) {
 			{
 				var curry = y1;
 				var currx = x1;
-				var pointer = game.field[curry][currx];
-				result.push(pointer);
-				while(pointer !== game.field[y2][x2])
+				result.push({x:currx,y:curry});
+				while(currx != x2 && curry != y2)
 				{
-					pointer = game.field[++curry][++currx];
-					result.push(pointer);
+					result.push({x:++currx, y:++curry});
 				}
 			} else {
 				var curry = y1;
 				var currx = x1;
-				var pointer = game.field[curry][currx];
-				result.push(pointer);
-				while(pointer !== game.field[y2][x2])
+				result.push({x:currx,y:curry});
+				while(currx != x2 && curry != y2)
 				{
-					pointer = game.field[--curry][++currx];
-					result.push(pointer);
+					result.push({x:++currx,y:--curry});
 				}
 			}
 		} else {
@@ -248,22 +187,18 @@ game.board.getPathFields = function(one, two) {
 			{
 				var curry = y1;
 				var currx = x1;
-				var pointer = game.field[curry][currx];
-				result.push(pointer);
-				while(pointer !== game.field[y2][x2])
+				result.push({x:currx,y:curry});
+				while(currx != x2 && curry != y2)
 				{
-					pointer = game.field[++curry][--currx];
-					result.push(pointer);
+					result.push({x:--currx,y:++curry});
 				}
 			} else {
 				var curry = y1;
 				var currx = x1;
-				var pointer = game.field[curry][currx];
-				result.push(pointer);
-				while(pointer !== game.field[y2][x2])
+				result.push({x:currx,y:curry});
+				while(currx != x2 && curry != y2)
 				{
-					pointer = game.field[--curry][--currx];
-					result.push(pointer);
+					result.push({x:--currx,y:--curry});
 				}
 			}
 		}
@@ -271,7 +206,7 @@ game.board.getPathFields = function(one, two) {
 	return result;
 };
 
-game.loop = function(el) {
+game.loop = function(x,y) {
 	switch(game.stage)
 	{
 	case "loading":
@@ -296,34 +231,34 @@ game.loop = function(el) {
 		game.stage = "dead0";
 		break;
 	case "dead0":
-		el.classList.add("dead");
+		game.setField(x,y,"dead");
 		game.toggleTurn();
 		game.msg.send({text:game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll"});
 		game.stage = "dead1";
 		break;
 	case "dead1":
-		if(!el.classList.contains("dead"))
+		if(game.getField(x,y) != "dead")
 		{
-			el.classList.add("dead");
+			game.setField(x,y,"dead");
 			game.toggleTurn();
 			game.msg.send({text:game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll"});
 			game.stage = "dead2";
 		}
 		break;
 	case "dead2":
-		if(!el.classList.contains("dead"))
+		if(game.getField(x,y) != "dead")
 		{
-			el.classList.add("dead");
+			game.setField(x,y,"dead");
 			game.toggleTurn();
 			game.msg.send({text:game.score.getPlayerName(game.turn) + ": Wähle das Startfeld aus"});
 			game.stage = "start";
 		}
 		break;
 	case "start":
-		if(!el.classList.contains("dead"))
+		if(game.getField(x,y) != "dead")
 		{
-			el.classList.add("standing");
-			game.recent = el;
+			game.setField(x,y,"standing");
+			game.recent = {x: x, y: y};
 			game.toggleTurn();
 			game.roll = game.dice();
 			game.msg.send({text:game.score.getPlayerName(game.turn) + ": Ziehe " + game.roll + " Felder"});
@@ -331,16 +266,16 @@ game.loop = function(el) {
 		}
 		break;
 	case "running":
-		if(!el.classList.contains("dead") && game.board.validTurn(game.recent, el))
+		if(game.getField(x,y) != "dead" && game.board.validTurn(game.recent, {x:x, y:y}))
 		{
 			if(
 				+game.scoreboard.getElementsByTagName("tr")[1].childNodes[1].innerHTML < 10 &&
 				+game.scoreboard.getElementsByTagName("tr")[2].childNodes[1].innerHTML < 10 )
 			{
-				game.recent.classList.remove("standing");
-				el.classList.add("standing");
+				game.setField(game.recent.x, game.recent.y, "nothing");
+				game.setField(x,y,"standing");
 				game.old = game.recent;
-				game.recent = el;
+				game.recent = {x:x, y:y};
 				var diff = game.board.whichDiff(game.old, game.recent);
 				var pt = (game.roll - diff > 0 ? game.roll - diff : 0);
 				game.score.addPoints(game.turn, pt);
