@@ -1,0 +1,3 @@
+[submodule "msgboard"]
+	path = msgboard
+	url = https://github.com/sirjofri/msgboard.git

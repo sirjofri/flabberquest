@@ -20,8 +20,6 @@ the initialize(field, msg, scoreboard) expects a table object like with getEleme
 
 very important: No spaces/newlines/tabs inside this section! Technically: No text nodes!
 
-the other argument msg is an html element which will contain game messages.
-
 the argument scoreboard is an html element. please look into index.html for reference.
 */
 
@@ -294,13 +292,13 @@ game.loop = function(el) {
 				game.turn = 2;
 			}
 		}
-		game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll";
+		game.msg.send({text:game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll"});
 		game.stage = "dead0";
 		break;
 	case "dead0":
 		el.classList.add("dead");
 		game.toggleTurn();
-		game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll";
+		game.msg.send({text:game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll"});
 		game.stage = "dead1";
 		break;
 	case "dead1":
@@ -308,7 +306,7 @@ game.loop = function(el) {
 		{
 			el.classList.add("dead");
 			game.toggleTurn();
-			game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll";
+			game.msg.send({text:game.score.getPlayerName(game.turn) + ": Wähle ein Feld aus, das zur Wand werden soll"});
 			game.stage = "dead2";
 		}
 		break;
@@ -317,7 +315,7 @@ game.loop = function(el) {
 		{
 			el.classList.add("dead");
 			game.toggleTurn();
-			game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Wähle das Startfeld aus";
+			game.msg.send({text:game.score.getPlayerName(game.turn) + ": Wähle das Startfeld aus"});
 			game.stage = "start";
 		}
 		break;
@@ -328,7 +326,7 @@ game.loop = function(el) {
 			game.recent = el;
 			game.toggleTurn();
 			game.roll = game.dice();
-			game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Ziehe " + game.roll + " Felder";
+			game.msg.send({text:game.score.getPlayerName(game.turn) + ": Ziehe " + game.roll + " Felder"});
 			game.stage = "running";
 		}
 		break;
@@ -350,25 +348,25 @@ game.loop = function(el) {
 					+game.scoreboard.getElementsByTagName("tr")[1].childNodes[1].innerHTML >= 10 ||
 					+game.scoreboard.getElementsByTagName("tr")[2].childNodes[1].innerHTML >= 10 )
 				{
-					game.msg.innerHTML = "Das Spiel ist gewonnen! Siehe unten für die Ergebnisse";
+					game.msg.send({text:"Das Spiel ist gewonnen! Siehe unten für die Ergebnisse"});
 					game.stage = "stopped";
 					break;
 				}
 				game.toggleTurn();
 				game.roll = game.dice();
-				game.msg.innerHTML = game.score.getPlayerName(game.turn) + ": Ziehe "+game.roll+" Felder";
+				game.msg.send({text:game.score.getPlayerName(game.turn) + ": Ziehe "+game.roll+" Felder"});
 				break;
 			} else {
-				game.msg.innerHTML = "Das Spiel ist gewonnen! Siehe unten für die Ergebnisse";
+				game.msg.send({text:"Das Spiel ist gewonnen! Siehe unten für die Ergebnisse",visibility:0});
 				game.stage = "stopped";
 				break;
 			}
 		} else {
-			game.msg.innerHTML = "Ungültiger Zug!<br>"+game.msg.innerHTML;
+			game.msg.send({text:"Ungültiger Zug!",nocount:true});
 		}
 		break;
 	case "stopped":
-		game.msg.innerHTML = "Das Spiel ist gewonnen! Siehe unten für die Ergebnisse<br>Zum erneuten Spielen die Seite aktualisieren";
+		game.msg.send({text:"Zum erneuten Spielen die Seite aktualisieren"});
 		break;
 	}
 };
